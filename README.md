@@ -22,6 +22,7 @@ third step: choose the gene that you're interested in its mutation. (support one
 update: new version will allow you to access the sample_type (tumor or normal)
 
 #########################################
+
 case2FPKM.py enables linking the case_id with FPKM scores without any somatic mutations information. 
 
 usage case2FPKM.py -h gives you all the parameters
