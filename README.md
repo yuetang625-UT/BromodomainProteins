@@ -18,3 +18,5 @@ methods for TCGA to call somatic mutations. Choose either one or combine them.
 second step: choose the gene list you would like to inquire about expression level. (please transfer the gene_id to Ensembl gene id)
 
 third step: choose the gene that you're interested in its mutation. (support one gene)
+
+updata1: new version will allow you to access the sample_type (tumor or normal)

@@ -2,7 +2,7 @@
 
 """
 Script Created by Yue. 
-version = beta1, Date:2019/8/27
+version = beta2, Date:2019/8/27
 TCGA data caseid UUID and RNA expression combine
 Need to downlowad the MAF files that you needed from TCGA, this script begin with the MAF file
 """
@@ -61,9 +61,9 @@ def metadata(UUID):
     parm = '{"op":"and","content":[{"op":"in","content":{"field":"cases.case_id","value":["%s"]}}]}' %(UUID)
     j_parm = quote(parm)
     meta_url = cases_endpt + j_parm + cases_ending
-    commands.getoutput('curl "%s" > metadata.json' %(meta_url))
+    commands.getoutput('curl "%s" > %s_metadata.json' %(meta_url, UUID))
     meta_infor = []
-    meta_d = jdc('metadata.json')
+    meta_d = jdc(('%s_metadata.json') %(UUID))
     prim_diag = meta_d['data']['hits'][0]['diagnoses'][0]['primary_diagnosis']
     meta_infor.append(str(prim_diag))
     tum_s = meta_d['data']['hits'][0]['diagnoses'][0]['tumor_stage']
@@ -86,19 +86,26 @@ def FPKMdata(UUID):
     files_ending = '&pretty=true'
     j_parm = quote(parm)
     FPKM_url = files_endpt + j_parm + files_ending
-    commands.getoutput('curl "%s" > FPKMdata.json' %(FPKM_url))
+    commands.getoutput('curl "%s" > %s_FPKMdata.json' %(FPKM_url, UUID))
     exp_endpt = 'https://api.gdc.cancer.gov/data/'
-    load_d = jdc('FPKMdata.json')
+    load_d = jdc(('%s_FPKMdata.json') %(UUID))
+    count = 0
+    exp_nm_l = []
     for i in range(len(load_d['data']['hits'])):
         if 'FPKM.txt.gz' in load_d['data']['hits'][i]['file_name']:
+            print load_d['data']['hits'][i]['file_name']
             exp_nm = load_d['data']['hits'][i]['file_name']
             exp_id = load_d['data']['hits'][i]['file_id']
             exp_url = exp_endpt + exp_id
-            commands.getoutput ('curl --remote-name --remote-header-name %s' %(exp_url))
-                #exp_extract_command = 'cat %s | while read line;do zgrep ${line} %s >> expression.txt;done' %(options.esmlid, exp_nm)                    
+            commands.getoutput('curl --remote-name --remote-header-name %s' %(exp_url))
+            commands.getoutput('curl "https://api.gdc.cancer.gov/files/"%s"?expand=cases.samples&pretty=true" > %s.json' %(exp_id, exp_nm))
+            exp_nm_l.append(exp_nm)
+            count = count + 1
+            #exp_extract_command = 'cat %s | while read line;do zgrep ${line} %s >> expression.txt;done' %(options.esmlid, exp_nm)                    
         else:
             continue
-    return exp_nm
+    print "total sample type" + "\t" + str(count)
+    return exp_nm_l
             
 ####gene-FPKM-level####
 def FPKML(exp_nm):
@@ -127,22 +134,24 @@ with open ('combined_infor.xls', 'w') as fin:
             if 'Hugo_Symbol' in l_item:
                 UUID_id = l_item.index("case_id")
                 H_symbol = l_item.index("Hugo_Symbol")
-                fin.write("\t".join(l_item + m_all + esm_list) + "\n")
+                fin.write("\t".join(l_item + m_all + esm_list) + "\t" + "sample_type" + "\n")
                 #fin.write("\n")
             else:
                 if options.geneid in l_item[H_symbol]:
                     print "#############"
                     print l_item[UUID_id]
                     m_infor = metadata(l_item[UUID_id])
-                    exp_num = []
-                    exp_nm = FPKMdata(l_item[UUID_id])
-                    FL = FPKML(("%s") %(exp_nm))
-                    for i in esm_list:
-                        if i in FL.keys():
-                            exp_num.append(str(FL[i]))
-                    fin.write("\t".join(l_item+m_infor+exp_num) + "\n")
-                else:
-                    continue
+                    exp_nm_l = FPKMdata(l_item[UUID_id])
+                    for f in exp_nm_l:
+                        exp_num = []
+                        FL = FPKML(("%s") %(f))
+                        sample_type = jdc(('%s.json')%(f))['data']['cases'][0]['samples'][0]['sample_type']
+                        for i in esm_list:
+                            if i in FL.keys():
+                                exp_num.append(str(FL[i]))
+                        fin.write("\t".join(l_item+m_infor+exp_num) + "\t" + str(sample_type) + "\n")
+                    else:
+                        continue
                 
 origl.close()
 fin.close()
