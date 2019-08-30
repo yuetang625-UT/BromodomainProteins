@@ -8,7 +8,7 @@ usage transfer_id.py -h gives you all the parameters
 
 -i ESMLID, --inqury_gene_file=ESMLID Ensembl id for your research gene
 
--g GENEID, --gene_id=GENEID input the gene name you want to inqure
+-g GENEID, --gene_id=GENEID input the gene name you want to inquire
 
 -o OUTDIR, --output-dir=OUTDIR Output directory (default: current)
 
@@ -19,4 +19,16 @@ second step: choose the gene list you would like to inquire about expression lev
 
 third step: choose the gene that you're interested in its mutation. (support one gene)
 
-updata1: new version will allow you to access the sample_type (tumor or normal)
+update: new version will allow you to access the sample_type (tumor or normal)
+
+#########################################
+case2FPKM.py enables linking the case_id with FPKM scores without any somatic mutations information. 
+
+usage case2FPKM.py -h gives you all the parameters
+
+-f MAF, --input_file=clinical data file which contains the case_id from TCGA (download this from the TCGA-exploration)
+
+-i ESMLID, --inqury_gene_file=ESMLID Ensembl id for your research gene
+
+-o OUTDIR, --output-dir=OUTDIR Output directory (default: current)
+
