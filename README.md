@@ -32,5 +32,3 @@ usage case2FPKM.py -h gives you all the parameters
 -i ESMLID, --inqury_gene_file=ESMLID Ensembl id for your research gene
 
 -o OUTDIR, --output-dir=OUTDIR Output directory (default: current)
-
-#########################################
