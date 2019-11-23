@@ -46,4 +46,4 @@ somatic_type: all the mutations recorded separately, it means if a sample has a 
 
 #########################################
 
-TCGA_data: detail mutation information, clinical information.
+TCGA_data: detail mutation and annotation information, clinical information.
