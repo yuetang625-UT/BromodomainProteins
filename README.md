@@ -1,5 +1,9 @@
 # BromodomainProteins
 
+Project introduction and results could be found in BP_status.pdf, anyone who wants to replicate plots in the PDF could use the data from plot_data directly.
+
+######################################### 	
+
 transfer_id.py automatically combines the mutation information of a specific gene with metadata and FPKM expression levels of target genes.
 
 usage transfer_id.py -h gives you all the parameters
@@ -32,3 +36,14 @@ usage case2FPKM.py -h gives you all the parameters
 -i ESMLID, --inqury_gene_file=ESMLID Ensembl id for your research gene
 
 -o OUTDIR, --output-dir=OUTDIR Output directory (default: current)
+
+#########################################
+
+plot_data: contains expression, CNV, somatic mutation category infromation.
+
+somatic_type: all the mutations recorded separately, it means if a sample has a CNV as well as a SNV, it had two records in the plot_data file.
+
+
+#########################################
+
+TCGA_data: detail mutation information, clinical information.
